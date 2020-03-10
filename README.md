@@ -1,1 +1,1 @@
-# Armospheric Scattering
+# Atmospheric Scattering
