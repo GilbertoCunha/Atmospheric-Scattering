@@ -1,22 +1,22 @@
 from Algorithm import *
 import matplotlib.pyplot as plt
 
-# Constantes numpy
+# Numpy constants
 pi, cos, sin, sqrt, tan, arctan = np.pi, np.cos, np.sin, np.sqrt, np.tan, np.arctan2
 
 
 def angle_matrix(width, length, fov, dist_to_plane, ppp, direc):
     """
-    Esta função cria a matriz de ângulos para o plano de imagem
+    This function creates a matrix of angles for the image grid
 
-    width {int}: número de linhas de píxeis
-    length {int}: número de colunas de píxeis
-    fov {float}: campo de visão
-    dist_to_plane {float}: distância do observador ao plano de imagem
-    ppp {int}: fotões a disparar por píxel
-    direc {Vector}: vetor direção (unitário) do olhar do observador
+    width {int}: number of pixel lines
+    length {int}: number of pixel columns
+    fov {float}: field of view
+    dist_to_plane {float}: distance from observer to image grid
+    ppp {int}: light rays shot per pixel
+    direc {Vector}: direction unitary vector of the observer's viewpoint
 
-    return {[[Vector]]}: Matriz com todos os ângulos de disparo para cada fotão
+    return {[[Vector]]}: Matrix with all the firing angles for each light ray in each pixel
     """
 
     matrix, angles = [], []
@@ -25,18 +25,18 @@ def angle_matrix(width, length, fov, dist_to_plane, ppp, direc):
         line = []
         for jj in range(length):
             angles = []
-            # Número dos píxeis nos eixos x e y
+            # Number of pixels in x and y axis'
             pp_x = jj - 0.5 * (length - 1)
             pp_y = ii - 0.5 * (width - 1)
 
-            # Definir os ângulos que delimitam cada píxel
+            # Defining the boundary angles of each pixel
             po_up = arctan(-(pp_x + 0.4) * pixel_side, dist_to_plane)
             po_down = arctan(-(pp_x - 0.4) * pixel_side, dist_to_plane)
             az_up = arctan((pp_y + 0.4) * pixel_side, dist_to_plane)
             az_down = arctan((pp_y - 0.4) * pixel_side, dist_to_plane)
 
             for _ in range(ppp):
-                # Gerar ângulos aleatórios dentro da área de cada píxel
+                # Generating random angles inside each pixel
                 polar = (po_up - po_down) * np.random.random() + po_down + direc.y
                 azimuth = (az_up - az_down) * np.random.random() + az_down + direc.z
                 angles += [Vector(1, polar, azimuth, 'sph')]
@@ -47,20 +47,20 @@ def angle_matrix(width, length, fov, dist_to_plane, ppp, direc):
     return matrix
 
 
-# Variáveis de posição e direção
+# Position and direction variables
 posicao = Vector(raio_terra + 1.8, 0, 0, 'sph')
 direcao, sun_direcao = Vector(1, 0, pi/2, 'sph'), Vector(1, 0, pi/2 - 0.05, 'sph')
 
-# Parâmetros de ajuste do plano de imagem e tone mapping
+# Image plane and tone mapping parameters
 DIST_TO_PLANE, FOV = 1, pi/12
 WIDTH, LENGTH, PPP = 20, 20, 1
 EXPOSURE, STRETCH = 18000, 2.2
 BOOST = 50000
 
-# Criar a matriz de ângulos
+# Matrix of angles
 ANGLE_MATRIX = angle_matrix(WIDTH, LENGTH, FOV, DIST_TO_PLANE, PPP, direcao)
 
-# Ciclo da matriz de resultados
+# Cicle to obtain results matrix, the final image
 wavelengths = [(6.8e-7, 0.685), (5.5e-7, 0.81), (4.4e-7, 0.775)]
 LUMINANCE, RESULTS = [], []
 for i in range(WIDTH):
@@ -76,7 +76,7 @@ for i in range(WIDTH):
         linha += [pixel]
     RESULTS += [linha]
 
-# Mostrar a imagem gerada
+# Show the final image
 plt.figure(dpi=200)
 plt.imshow(RESULTS, cmap='hot', interpolation='bilinear', extent=[-1, 1, -1, 1])
 plt.savefig('goodsky.png')
