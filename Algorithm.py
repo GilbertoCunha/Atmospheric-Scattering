@@ -12,7 +12,8 @@ n = 1.00029
 # T = 20  # Temperatura ao nível do mar em graus Celsius
 # P = 101  # Pressão ao nível do mar em kPa
 raio_terra, altura_atm = 6.3781e6, 8e4
-beta_mie, beta_rayleigh = 5.76e-7, (8 / (3 * 2.504e25)) * (pi ** 3) * (n ** 2 - 1)**2
+beta_mie, beta_rayleigh = 5.76e-7, (8 / (3 * 2.504e25)) * (pi ** 3) * (n ** 2 - 1) ** 2
+# beta_mie, beta_rayleigh = 0, (8 / (3 * 2.504e25)) * (pi ** 3) * (n ** 2 - 1) ** 2
 H_M, H_R = 1200, 7994
 
 # Construção das camadas esféricas da atmosfera
@@ -20,6 +21,8 @@ shell_height = np.geomspace(10, altura_atm - 800, steps)
 log_shell_height = [altura_atm - altura for altura in shell_height]
 log_shell_height = log_shell_height[::-1]
 shell_height += [altura_atm]
+
+
 # log_shell_height = np.linspace(10, altura_atm - 800, steps)
 
 
@@ -78,7 +81,8 @@ def scatter_transmission(h, angle, w):
 
     # Cálculo da fase de rayleigh e de mie
     phase_rayleigh = (3 / 4) * (1 + (cos(angle)) ** 2)
-    phase_mie = 1.5 * ((1 - g**2) / (2 + g**2)) * (1 + (cos(angle))**2)/((1 + g**2 - 2 * g * cos(angle))**1.5)
+    phase_mie = 1.5 * ((1 - g ** 2) / (2 + g ** 2)) * (1 + (cos(angle)) ** 2) / (
+                (1 + g ** 2 - 2 * g * cos(angle)) ** 1.5)
 
     # Soma das contribuições dos espalhamentos de mie e de rayleigh
     beta_ray = beta_rayleigh / (w ** 4)
@@ -105,7 +109,7 @@ def sum_to_opt_dep(r, dis, w, one_step=False):
         # Cálculo das densidades para cada passo
         rho_mie = np.exp(- (r.x - raio_terra) / H_M)
         rho_rayleigh = np.exp(- (r.x - raio_terra) / H_R)
-        
+
         # Optical depth in this step
         opt_dep = 4 * pi * (beta_mie * rho_mie + beta_ray * rho_rayleigh) * dis.x
         return opt_dep
@@ -116,7 +120,7 @@ def sum_to_opt_dep(r, dis, w, one_step=False):
     min_height = r.x * sin(pi - r.angle(dis)) - raio_terra
 
     # Determinar as camadas esféricas a percorrer:
-    n_min, n_max = 0, steps-1
+    n_min, n_max = 0, steps - 1
     for step in range(steps):
         if shell_height[step] > max_height - raio_terra:
             n_max = step - 1
@@ -129,7 +133,7 @@ def sum_to_opt_dep(r, dis, w, one_step=False):
     while num <= n_max:
         # Determinar a camada esférica a perfurar
         angle = pi - r.angle(dis)
-        min_angle = np.arcsin(r.x/shell_height[num-1])
+        min_angle = np.arcsin(r.x / shell_height[num - 1])
         if angle < min_angle:
             num -= 1
 
@@ -200,8 +204,8 @@ def scatter_per_step(r, direction, sun_dir, w, opt_t):
         scatter_vector = scatter_per_step(r, scatter_direction, sun_dir, w, scatter_opt_t)
 
         # Somar as contribuições dos outros fotões diretos ao sol
-        direct_tr += direct_tr*scatter_vector[1][0]
-        direct_tm += direct_tm*scatter_vector[1][1]
+        direct_tr += direct_tr * scatter_vector[1][0]
+        direct_tm += direct_tm * scatter_vector[1][1]
 
         # Atualizar o valor da transmitância do fotão espalhado
         scatter_tr *= scatter_vector[0][0]
@@ -253,7 +257,6 @@ def main_cicle(r, direction, sun_dir, w):
     # Percorrer cada uma das superfícies esféricas logaritmicas
     opt_dep, t = 0, 0
     for num in nums:
-
         # Calcular o vetor deslocamento e atualizar o vetor posição
         displacement = Vector(dist_min_log_shell(r, direction, num), direction.y, direction.z, 'sph')
         r = r.add(displacement)
