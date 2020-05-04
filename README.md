@@ -2,6 +2,6 @@
 
 This is an algorithm for calculating the color of the sky in python. It takes into account both Rayleigh and Mie scattering. 
 The code is subdivided in three chunks:
-- Classes.py: Where I create a vector class with vector properties that will be useful throughout the code
-- Algorithm.py: Where I create the algorithm that we will be using for calculating the color of one pixel
-- Results.py: Where I generate a matrix of pixels (the image grid) and calculate an image of the sky according to the observer's viewpoint and the direction of the sun.
+- Classes.py: Where the vector class with vector properties that will be useful throughout the code is implemented
+- Algorithm.py: Where the algorithm that we will be using for calculating the color of one pixel is implemented
+- Results.py: Where the image creation takes place
