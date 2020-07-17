@@ -10,10 +10,10 @@ class Vector:
         self.coord = coord
 
     def __str__(self):
-        return "[" + str(self.x) + ", " + str(self.y) + ", " + str(self.z) + ", " + str(self.coord) + "]"
+        return "Vector: [" + str(self.x) + ", " + str(self.y) + ", " + str(self.z) + ", " + str(self.coord) + "]"
 
     def __repr__(self):
-        return "[" + str(self.x) + ", " + str(self.y) + ", " + str(self.z) + ", " + str(self.coord) + "]"
+        return "Vector: [" + str(self.x) + ", " + str(self.y) + ", " + str(self.z) + ", " + str(self.coord) + "]"
 
     def sph2cart(self):
         if self.coord == 'cart':
@@ -77,6 +77,19 @@ class Vector:
         v2 = -1*other.sph2cart()
         return v1.add(v2).norm()
 
+    def transform(self, t):
+        flag = False
+        if self.coord == 'sph':
+            flag = True
+            self.sph2cart()
+
+        r = Vector(self.dot(t.row1), self.dot(t.row2), self.dot(t.row3), 'cart')
+
+        if flag:
+            r.cart2sph()
+
+        return r
+
 
 class Line:
 
@@ -95,8 +108,24 @@ class Plane:
         self.normal = normal
 
     def __str__(self):
-        return "Point: " + str(self.point) + " | Normal: " + str(self.normal)
+        point = [self.point.x, self.point.y, self.point.z, self.point.coord]
+        normal = [self.normal.x, self.normal.y, self.normal.z, self.normal.coord]
+        return "Point: " + str(point) + " | Normal: " + str(normal)
 
     def line_intersection(self, line):
         d = self.point.add(-1 * line.point).dot(self.normal) / line.vec.dot(self.normal)
         return line.point.add(d * line.vec)
+
+
+class Transformation:
+
+    def __init__(self, row1, row2, row3):
+        self.row1 = row1.sph2cart()
+        self.row2 = row2.sph2cart()
+        self.row3 = row3.sph2cart()
+
+    def __str__(self):
+        row1 = [self.row1.x, self.row1.y, self.row1.z]
+        row2 = [self.row2.x, self.row2.y, self.row2.z]
+        row3 = [self.row3.x, self.row3.y, self.row3.z]
+        return "Transformation: " + str([row1, row2, row3])
