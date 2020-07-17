@@ -91,32 +91,6 @@ class Vector:
         return r
 
 
-class Line:
-
-    def __init__(self, point, vec):
-        self.point = point
-        self.vec = vec
-
-    def __str__(self):
-        return str(self.point) + "k * " + str(self.vec)
-
-
-class Plane:
-
-    def __init__(self, point, normal):
-        self.point = point
-        self.normal = normal
-
-    def __str__(self):
-        point = [self.point.x, self.point.y, self.point.z, self.point.coord]
-        normal = [self.normal.x, self.normal.y, self.normal.z, self.normal.coord]
-        return "Point: " + str(point) + " | Normal: " + str(normal)
-
-    def line_intersection(self, line):
-        d = self.point.add(-1 * line.point).dot(self.normal) / line.vec.dot(self.normal)
-        return line.point.add(d * line.vec)
-
-
 class Transformation:
 
     def __init__(self, row1, row2, row3):

@@ -1,5 +1,8 @@
-from Algorithm2 import *
+# Import my libraries
+from Algorithm import *
 from Vector import *
+
+# Import external libraries
 import matplotlib.pyplot as plt
 from itertools import product
 import concurrent.futures
@@ -10,9 +13,9 @@ import time
 pi, cos, sin, sqrt, tan, arctan = np.pi, np.cos, np.sin, np.sqrt, np.tan, np.arctan2
 
 # Variáveis de posição e direção
-posicao = Vector(raio_terra + 1.8, 0, 0, 'sph')
-# direcao, sun_direcao = Vector(1, 0, pi/2, 'sph'), Vector(1, 0, pi/2 - 0.05, 'sph')
-direcao, sun_direcao = Vector(1, 0, pi/4, 'sph'), Vector(1, 0, pi/4, 'sph')
+posicao = Vector(earth_radius + 8000, 0, 0, 'sph')
+direcao, sun_direcao = Vector(1, 0, pi/2, 'sph'), Vector(1, 0, pi/2 - 0.05, 'sph')
+# direcao, sun_direcao = Vector(1, 0, pi/4, 'sph'), Vector(1, 0, pi/4, 'sph')
 
 # Parâmetros de ajuste da imagem
 wavelengths = [(6.8e-7, 0.685), (5.35e-7, 0.81), (4.6e-7, 0.775)]
@@ -22,7 +25,6 @@ EXPOSURE, STRETCH = 1.8e4, 2.2
 
 
 def angle_matrix(width, length, fov, ppp, direc):
-    # WARNING: ANGLES ARE NOT WELL GENERATED!!!
     """
     Esta função cria a matriz de ângulos para o plano de imagem
 
@@ -105,7 +107,7 @@ def do_pixel(arg):
     for (w, sun_emit) in wavelengths:
         intensity = 0
         for k in range(PPP):
-            intensity += main_cicle(posicao, ANGLE_MATRIX[width][length][k], sun_direcao, w)
+            intensity += main_cycle(posicao, ANGLE_MATRIX[width][length][k], sun_direcao, w)
         tone_map = (1 - np.exp(-sun_emit * intensity * EXPOSURE)) ** (1 / STRETCH)
         pixel += [tone_map]
 
