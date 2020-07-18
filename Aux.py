@@ -6,45 +6,44 @@ from Vector import Vector, Transformation
 cos, sin, tan, pi = np.cos, np.sin, np.tan, np.pi
 
 
-def angle_matrix(width, length, fov, ppp, direction):
+def angle_matrix(width, length, fov, bpp, direction):
     """
     This function generates a matrix of shooting angles for the image plane
 
-    width {int}: número de linhas de píxeis
-    length {int}: número de colunas de píxeis
-    fov {float}: campo de visão
-    dist_to_plane {float}: distância do observador ao plano de imagem
-    ppp {int}: fotões a disparar por píxel
-    direc {Vector}: vetor direção (unitário) do olhar do observador
+    width -> int: number of pixel rows
+    length -> int: number of pixel columns
+    fov -> float: field of vision
+    bpp -> int: light beams shot per pixel
+    direction -> Vector: observer's sight direction unit vector
 
-    return {[[Vector]]}: Matriz com todos os ângulos de disparo para cada fotão
+    return -> [[Vector]]: Matrix containing shooting angles or each pixel
     """
 
-    # Matriz de rotação do ângulo polar
+    # Polar angle rotation matrix
     r1x = Vector(cos(direction.z - pi / 2), 0, sin(direction.z - pi / 2), 'cart')
     r1y = Vector(0, 1, 0, 'cart')
     r1z = Vector(-sin(direction.z - pi / 2), 0, cos(direction.z - pi / 2), 'cart')
     rotation1 = Transformation(r1x, r1y, r1z)
 
-    # Matriz de rotação do ângulo azimutal
+    # Azimuthal angle rotation matrix
     r2x = Vector(cos(direction.y), sin(direction.y), 0, 'cart')
     r2y = Vector(-sin(direction.y), cos(direction.y), 0, 'cart')
     r2z = Vector(0, 0, 1, 'cart')
     rotation2 = Transformation(r2x, r2y, r2z)
 
-    # Determinar vértices do plano imagem caso este esteja no eixo x
+    # Determine image plain vertices for an image plane center in the x axis
     ul_point = Vector(1, tan(fov), tan(fov), 'cart')
     dr_point = Vector(1, -tan(fov), -tan(fov), 'cart')
     dl_point = Vector(1, tan(fov), -tan(fov), 'cart')
 
-    # Aplicar transformações aos pontos
+    # Apply transformations to get vertices in image plane according to observer viewing direction
     ul_point = ul_point.transform(rotation1).transform(rotation2).cart2sph()
     dr_point = dr_point.transform(rotation1).transform(rotation2).cart2sph()
     dl_point = dl_point.transform(rotation1).transform(rotation2).cart2sph()
 
-    # Versores do plano imagem
-    x_direc = dr_point.add(-1 * dl_point).normalize()
-    y_direc = ul_point.add(-1 * dl_point).normalize()
+    # Image plane unit vectors
+    x_unit_vector = dr_point.add(-1 * dl_point).normalize()
+    y_unit_vector = ul_point.add(-1 * dl_point).normalize()
 
     matrix = []
     for ii in tqdm(range(width), desc="Generating angles"):
@@ -52,12 +51,12 @@ def angle_matrix(width, length, fov, ppp, direction):
         for jj in range(length):
             angles = []
 
-            # Calcular vetor direção do píxel
-            x_disp = 2 * (jj / width) * tan(fov) * x_direc
-            y_disp = 2 * (ii / length) * tan(fov) * y_direc
-            pixel_dir = dl_point.add(x_disp).add(y_disp).normalize()
+            # Calculate pixel direction vector
+            x_displacement = 2 * (jj / width) * tan(fov) * x_unit_vector
+            y_displacement = 2 * (ii / length) * tan(fov) * y_unit_vector
+            pixel_dir = dl_point.add(x_displacement).add(y_displacement).normalize()
 
-            for _ in range(ppp):
+            for _ in range(bpp):
                 angles += [pixel_dir]
 
             line += [angles]
