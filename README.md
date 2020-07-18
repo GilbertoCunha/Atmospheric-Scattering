@@ -1,8 +1,8 @@
 # The Physics of the color of the sky: Atmospheric Light Scattering
-This repository is a project that was made for a Computational Physics
-class at University of Minho. It is a Python algorithm that calculates the
-color of the sky using light scattering physics, more specifically both
-Rayleigh and Mie scattering.
+This repository is the final project that I developed for a 
+Computational Physics class at University of Minho. It is a Python 
+algorithm that calculates the color of the sky using light scattering 
+physics, more specifically both Rayleigh and Mie scattering.
 
 It can calculate how the sunset looks:
 ![Sky](Images/sky.png "Sky color calculation")
@@ -10,8 +10,8 @@ It can calculate how the sunset looks:
 Or maybe you want to look at the sky at around midday:
 ![Sky](Images/NewSky.png "Sky color calculation")
 
-Or any other direction you want. You could even play around with some
-values to test how the sky would look like in other planets.
+Or any other direction you want. You can even change the values of the 
+earth's atmosphere to see how it would look like in a particular scenario.
 
 # How to navigate through the code
 I subdivided the code in 4 files:

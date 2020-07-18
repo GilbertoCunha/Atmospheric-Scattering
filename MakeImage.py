@@ -31,13 +31,16 @@ image = []
 
 def do_pixel(arg):
     """
-    This function calculates one pixel given of the final image
+    This function calculates one pixel of the final image given its row and column
+    It also applies tone mapping to give the image a more dynamic color range and to
+    brighten the image, since these physical calculations tend to return small
+    intensity values
 
     args -> (int, int):
         arg[0]: pixel row
         arg[1]: pixel column
 
-    return -> [(float, float, float)]: Cálculo de cor para a correspondente linha da imagem
+    return -> [float, float, float]: Color of the pixel
     """
 
     row, column = int(arg[0]), int(arg[1])
