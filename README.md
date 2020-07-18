@@ -14,7 +14,7 @@ Or any other direction you want. You can even change the values of the
 earth's atmosphere to see how it would look like in a particular scenario.
 
 # How to navigate through the code
-I subdivided the code in 4 files:
+I subdivided the code in 4 files under the folder Code:
 
 1. Vector.py: A file that contains a Vector class with some useful 
 properties to make the development of the main algorithm simpler.
@@ -54,9 +54,9 @@ the azimuthal and the polar angle, respectively.
 This class also includes some useful methods for vector operations.
 
 # How to generate images
-First go to the MakeImage.py file. In there you will see many 
-variables. These are the main ones that will help you play around
-and produce some nice results:
+First go to the MakeImage.py file under the Code folder. In there you
+will see many variables. These are the main ones that will help you 
+play around and produce some nice results:
 
 - direction: The viewing direction of the observer
 - sun_direction: The direction of the sun
