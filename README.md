@@ -1,7 +1,8 @@
 # The Physics of the color of the sky: Atmospheric Light Scattering
 This repository is a project that was made for a Computational Physics
-class at University of Minho. It is an algorithm that calculates the
-color of the sky using light scattering physics.
+class at University of Minho. It is a Python algorithm that calculates the
+color of the sky using light scattering physics, more specifically both
+Rayleigh and Mie scattering.
 
 It can calculate how the sunset looks:
 ![Sky](Images/sky.png "Sky color calculation")
@@ -15,13 +16,13 @@ values to test how the sky would look like in other planets.
 # How to navigate through the code
 I subdivided the code in 4 files:
 
-1. Vector.py: A file that contain a Vector class with some useful 
-properties to make the development of the main algorithm simpler
+1. Vector.py: A file that contains a Vector class with some useful 
+properties to make the development of the main algorithm simpler.
 2. Algorithm.py: Where the main algorithm is. It contains a function 
 that calculates the intensity of a certain color for one pixel and some
 auxiliary functions to help out in this process.
 3. Aux.py: This file contains an auxiliary function to calculate the 
-shooting direction Vectors for each pixel in the image plane 
+shooting direction Vectors for each pixel in the image plane.
 4. MakeImage.py: This is where you will be able to generate the images. 
 It calculates the color of each pixel for each RGB channel producing 
 an image at the end. Is is also a parallelization of the code of 
@@ -32,11 +33,11 @@ I am also working on a Jupyter Notebook that thoroughly explains the
 whole project.
 
 # The Vector class
-The vector class is just that, a class that represents vector. 
-I typically also use it to represent directions as unit vectors. 
-It supports both cartesian and spherical coordinates, since these
-two coordinate systems are very useful for the development of this
-project. To create a vector object, you simply do the following:
+The vector class is just that, a class that represents vectors. 
+I also use it to represent directions as unit vectors. It supports 
+both cartesian and spherical coordinates, since these two coordinate 
+systems are very useful for the development of this project. To create 
+a vector object, you simply do the following:
 
 vector = Vector(first_coordinate,
                 second_coordinate,
@@ -46,11 +47,15 @@ vector = Vector(first_coordinate,
 Coordinate type can be either 'cart' or 'sph' representing the two
 supported coordinate systems.
 
+For the cartesian system the three coordinates are, respectively, x, y 
+and z. For the spherical coordinates they are the distance to the origin,
+the azimuthal and the polar angle, respectively.
+
 This class also includes some useful methods for vector operations.
 
 # How to generate images
 First go to the MakeImage.py file. In there you will see many 
-variables. These are the main ones that will help you tinker around
+variables. These are the main ones that will help you play around
 and produce some nice results:
 
 - direction: The viewing direction of the observer
