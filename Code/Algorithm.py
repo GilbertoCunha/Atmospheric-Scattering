@@ -1,5 +1,5 @@
 import numpy as np
-from Vector import Vector
+from Code.Vector import Vector
 
 # Numpy constants
 pi, cos, sin, sqt, tan = np.pi, np.cos, np.sin, np.sqrt, np.tan

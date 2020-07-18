@@ -1,7 +1,7 @@
 # Import internal libraries
-from Algorithm import *
-from Vector import Vector
-from Aux import angle_matrix
+from Code.Algorithm import *
+from Code.Vector import Vector
+from Code.Aux import angle_matrix
 
 # Import external libraries
 import matplotlib.pyplot as plt
@@ -18,7 +18,7 @@ direction, sun_direction = Vector(1, 0, pi / 2, 'sph'), Vector(1, 0, pi / 2 - 0.
 wavelengths = [(6.8e-7, 0.685), (5.35e-7, 0.81), (4.6e-7, 0.775)]
 
 # pixel width and height, number of light beams shot per pixel, field of view
-width, length, bpp, fov = 200, 200, 1, pi / 12
+width, length, bpp, fov = 50, 50, 1, pi / 12
 
 # Tone mapping exposure and gamma correction
 exposure, gamma_corr = 1.8e4, 2.2
@@ -40,7 +40,7 @@ def do_pixel(arg):
         arg[0]: pixel row
         arg[1]: pixel column
 
-    return -> [float, float, float]: Color of the pixel
+    return -> [float, float, float]: RGB color of the pixel
     """
 
     row, column = int(arg[0]), int(arg[1])

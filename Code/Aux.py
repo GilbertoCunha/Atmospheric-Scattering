@@ -1,6 +1,6 @@
 import numpy as np
 from tqdm import tqdm
-from Vector import Vector, Transformation
+from Code.Vector import Vector, Transformation
 
 # Numpy constants
 cos, sin, tan, pi = np.cos, np.sin, np.tan, np.pi
