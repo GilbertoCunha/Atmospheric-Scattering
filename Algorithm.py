@@ -2,14 +2,14 @@ import numpy as np
 from Vector import Vector
 
 # Numpy constants
-pi, cos, sin, sqt = np.pi, np.cos, np.sin, np.sqrt
+pi, cos, sin, sqt, tan = np.pi, np.cos, np.sin, np.sqrt, np.tan
 
 # Algorithmic constants
 g, steps, prob_scatter = 0.996, 16, 0.5
 
-# Global Constants - you can play with these to pretend you are on different planets
-# beta_mie and beta_rayleigh are a pre-calculation of the extinction coefficients
-# without accounting for the wavelength
+"""Global Constants - you can play with these to pretend you are on different planets
+beta_mie and beta_rayleigh are a pre-calculation of the extinction coefficients
+without accounting for the wavelength"""
 n = 1.00029
 earth_radius, atm_height = 6.3781e6, 8e4
 beta_mie, beta_rayleigh = 5.76e-7, (8 / (3 * 2.504e25)) * (pi ** 3) * (n ** 2 - 1) ** 2
