@@ -2,12 +2,13 @@ import numpy as np
 from tqdm import tqdm
 from Vector import Vector, Transformation
 
+# Numpy constants
 cos, sin, tan, pi = np.cos, np.sin, np.tan, np.pi
 
 
 def angle_matrix(width, length, fov, ppp, direction):
     """
-    Esta função cria a matriz de ângulos para o plano de imagem
+    This function generates a matrix of shooting angles for the image plane
 
     width {int}: número de linhas de píxeis
     length {int}: número de colunas de píxeis
@@ -18,10 +19,6 @@ def angle_matrix(width, length, fov, ppp, direction):
 
     return {[[Vector]]}: Matriz com todos os ângulos de disparo para cada fotão
     """
-
-    # Campos de visão em ambas as direções
-    fovx = fov
-    fovy = fov * (width / length)
 
     # Matriz de rotação do ângulo polar
     r1x = Vector(cos(direction.z - pi / 2), 0, sin(direction.z - pi / 2), 'cart')
@@ -36,9 +33,9 @@ def angle_matrix(width, length, fov, ppp, direction):
     rotation2 = Transformation(r2x, r2y, r2z)
 
     # Determinar vértices do plano imagem caso este esteja no eixo x
-    ul_point = Vector(1, tan(fovx), tan(fovy), 'cart')
-    dr_point = Vector(1, -tan(fovx), -tan(fovy), 'cart')
-    dl_point = Vector(1, tan(fovx), -tan(fovy), 'cart')
+    ul_point = Vector(1, tan(fov), tan(fov), 'cart')
+    dr_point = Vector(1, -tan(fov), -tan(fov), 'cart')
+    dl_point = Vector(1, tan(fov), -tan(fov), 'cart')
 
     # Aplicar transformações aos pontos
     ul_point = ul_point.transform(rotation1).transform(rotation2).cart2sph()

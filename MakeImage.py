@@ -14,64 +14,70 @@ import time
 position = Vector(earth_radius + 1.8, 0, 0, 'sph')
 direction, sun_direction = Vector(1, 0, pi / 2, 'sph'), Vector(1, 0, pi / 2 - 0.05, 'sph')
 
-# Parâmetros de ajuste da imagem
+# Light wavelengths
 wavelengths = [(6.8e-7, 0.685), (5.35e-7, 0.81), (4.6e-7, 0.775)]
-DIST_TO_PLANE, FOV = 1, pi/12
-WIDTH, LENGTH, PPP = 100, 100, 1
-EXPOSURE, STRETCH = 1.8e4, 2.2
+
+# pixel width and height, number of light beams shot per pixel, field of view
+width, length, bpp, fov = 200, 200, 1, pi / 12
+
+# Tone mapping exposure and gamma correction
+exposure, gamma_corr = 1.8e4, 2.2
+
+# Generating the shooting angles for each pixel
+start = time.time()
+shoot_angles = angle_matrix(width, length, fov, bpp, direction)
+image = []
 
 
 def do_pixel(arg):
     """
-    Esta função calcula uma linha da imagem total
+    This function calculates one pixel given of the final image
 
-    args {tuple}:
-        mat_pos: coluna e linha do píxel na matriz
-        wavs: comprimentos de onda a considerar
-        ppp: número de raios de luz disparados por píxel
-        pos: posição do observador
-        sun_dir: direção do sol
+    args -> (int, int):
+        arg[0]: pixel row
+        arg[1]: pixel column
 
-    return {[(float, float, float)]}: Cálculo de cor para a correspondente linha da imagem
+    return -> [(float, float, float)]: Cálculo de cor para a correspondente linha da imagem
     """
 
-    width, length = int(arg[0]), int(arg[1])
+    row, column = int(arg[0]), int(arg[1])
     pixel = []
     for (w, sun_emit) in wavelengths:
         intensity = 0
-        for k in range(PPP):
-            intensity += main_cycle(position, ANGLE_MATRIX[width][length][k], sun_direction, w)
-        tone_map = (1 - np.exp(-sun_emit * intensity * EXPOSURE)) ** (1 / STRETCH)
+        for k in range(bpp):
+            intensity += main_cycle(position, shoot_angles[row][column][k], sun_direction, w)
+        tone_map = (1 - np.exp(-sun_emit * intensity * exposure)) ** (1 / gamma_corr)
         pixel += [tone_map]
 
     return pixel
 
 
-# Criar a matriz de ângulos e resultados
-start = time.time()
-ANGLE_MATRIX = angle_matrix(WIDTH, LENGTH, FOV, PPP, direction)
-RESULTS = []
-
-# Paralelizar o cálculo de cada píxel
+# Parallelize the calculation for each pixel
 if __name__ == '__main__':
     with concurrent.futures.ProcessPoolExecutor() as executor:
-        wid_list, len_list = np.linspace(0, WIDTH-1, WIDTH), np.linspace(0, LENGTH-1, LENGTH)
+        wid_list, len_list = np.linspace(0, width - 1, width), np.linspace(0, length - 1, length)
 
-        args = tqdm(product(wid_list, len_list), total=WIDTH*LENGTH, desc="Pre-processing")
+        args = tqdm(product(wid_list, len_list), total=width * length, desc="Pre-processing")
 
-        results = list(tqdm(executor.map(do_pixel, args), total=WIDTH*LENGTH, desc="Calculating"))
+        results = list(tqdm(executor.map(do_pixel, args), total=width * length, desc="Calculating"))
 
         for result in results:
-            RESULTS.append(result)
+            image.append(result)
 
 
-RESULTS = np.asarray(RESULTS).reshape((WIDTH, LENGTH, 3))
-
+# Reshaping the result as a np array
+image = np.asarray(image).reshape((width, length, 3))
 stop = time.time()
 print(f'This took {stop-start:.2f} seconds | {(stop-start)/60:.2f} minutes | {(stop-start)/3600:.2f} hours')
 
-# Mostrar a imagem gerada
-plt.figure(dpi=800)
-plt.imshow(RESULTS, cmap='hot', interpolation='bilinear', extent=[-1, 1, -1, 1])
-plt.savefig('sky1T.png')
+# Plotting the final image
+fig, ax = plt.subplots(dpi=400)
+ax.imshow(image)
+ax.spines['top'].set_visible(False)
+ax.spines['bottom'].set_visible(False)
+ax.spines['left'].set_visible(False)
+ax.spines['right'].set_visible(False)
+ax.set_yticks([])
+ax.set_xticks([])
+plt.savefig('sky1T.png', dpi=800)
 plt.show()
