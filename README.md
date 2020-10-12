@@ -29,9 +29,6 @@ an image at the end. Is is also a parallelization of the code of
 Algorithm.py to make calculations faster, even though they will still
 take some time.
 
-I am also working on a Jupyter Notebook that thoroughly explains the
-whole project.
-
 # The Vector class
 The vector class is just that, a class that represents vectors. 
 I also use it to represent directions as unit vectors. It supports 
